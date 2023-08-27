@@ -1,5 +1,5 @@
 //domain.com/
-import { useEffect, useState } from "react";
+
 import MeetUpList from "../components/meetups/MeetupList";
 
 const DUMMY_MEETUP = [
@@ -37,16 +37,35 @@ const DUMMY_MEETUP = [
   },
 ];
 
-const HomePage = () => {
-  const [loadedMeetups, setLoadedMeetups] = useState([]);
-
-  useEffect(() => {
-    //send http request and fetch data
-
-    setLoadedMeetups(DUMMY_MEETUP);
-  }, []);
-
-  return <MeetUpList meetups={loadedMeetups} />;
+const HomePage = (props) => {
+  return <MeetUpList meetups={props.meetups} />;
 };
+
+/*
+export async function getServerSideProps(context) {
+  //context can be usefull for authentication cases
+  const req = context.req;
+  const res = context.res;
+
+  //fetch data from api
+  return {
+    props: {
+      meetups: DUMMY_MEETUP,
+    },
+  };
+}
+*/
+
+export async function getStaticProps() {
+  //fetch data from api
+  //this only executes on the server side
+
+  return {
+    props: {
+      meetups: DUMMY_MEETUP,
+    },
+    revalidate: 1,
+  }; //always need to return an object
+}
 
 export default HomePage;
