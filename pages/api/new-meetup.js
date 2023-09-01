@@ -9,14 +9,14 @@ const Handler = async (req, res) => {
 
     //connecting coming request (Data) to mongodb
     const client = await MongoClient.connect(
-      "mongodb+srv://zuhriddin_ganiev:zuhriddin-tech@cluster-zuhriddin.65mbqpl.mongodb.net/?retryWrites=true&w=majority"
+      "mongodb+srv://zuhriddin_ganiev:MxjXRYnqaVfAwsfO@cluster-zuhriddin.65mbqpl.mongodb.net/meetups?retryWrites=true&w=majority"
     );
     const db = client.db();
 
     //creating collection with name of 'meetups'
     const meetupsCollection = db.collection("meetups");
 
-    const result = meetupsCollection.insertOne(data);
+    const result = await meetupsCollection.insertOne(data);
     console.log(result);
 
     client.close();
