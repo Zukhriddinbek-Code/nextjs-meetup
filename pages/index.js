@@ -1,41 +1,6 @@
 //domain.com/
-
+import { MongoClient } from "mongodb";
 import MeetUpList from "../components/meetups/MeetupList";
-
-const DUMMY_MEETUP = [
-  {
-    id: "m1",
-    title: "A first meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg",
-    address: "Old Town Germany Munich 2, 124 st",
-    description: "This is first meetup",
-  },
-  {
-    id: "m2",
-    title: "A second meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg",
-    address: "Old Town Germany Munich 2, 124 st",
-    description: "This is first meetup",
-  },
-  {
-    id: "m3",
-    title: "A third meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg",
-    address: "Old Town Germany Munich 2, 124 st",
-    description: "This is first meetup",
-  },
-  {
-    id: "m4",
-    title: "A fourth meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/1280px-Stadtbild_M%C3%BCnchen.jpg",
-    address: "Old Town Germany Munich 2, 124 st",
-    description: "This is first meetup",
-  },
-];
 
 const HomePage = (props) => {
   return <MeetUpList meetups={props.meetups} />;
@@ -60,9 +25,27 @@ export async function getStaticProps() {
   //fetch data from api
   //this only executes on the server side
 
+  const client = await MongoClient.connect(
+    "mongodb+srv://zuhriddin_ganiev:MxjXRYnqaVfAwsfO@cluster-zuhriddin.65mbqpl.mongodb.net/meetups?retryWrites=true&w=majority"
+  );
+  const db = client.db();
+
+  //creating collection with name of 'meetups'
+  const meetupsCollection = db.collection("meetups");
+  const meetups = await meetupsCollection.find().toArray(); //toArray() get array of data
+
+  client.close();
+
+  fetch("/api/meetups");
+
   return {
     props: {
-      meetups: DUMMY_MEETUP,
+      meetups: meetups.map((meetup) => ({
+        title: meetup.title,
+        address: meetup.address,
+        image: meetup.image,
+        id: meetup._id.toString(),
+      })),
     },
     revalidate: 1,
   }; //always need to return an object
