@@ -1,12 +1,24 @@
 //domain.com/
 import { MongoClient } from "mongodb";
+import Head from "next/head";
 import MeetUpList from "../components/meetups/MeetupList";
 
 const HomePage = (props) => {
-  return <MeetUpList meetups={props.meetups} />;
+  return (
+    <>
+      <Head>
+        <title>NEXT Meetups</title>
+        <meta
+          name="description"
+          content="Browse a huge list of highly active NEXT meetups!"
+        />
+      </Head>
+      <MeetUpList meetups={props.meetups} />
+    </>
+  );
 };
 
-/*
+/*  
 export async function getServerSideProps(context) {
   //context can be usefull for authentication cases
   const req = context.req;
